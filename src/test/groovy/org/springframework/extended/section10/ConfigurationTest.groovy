@@ -1,5 +1,6 @@
 package org.springframework.extended.section10
 
+import org.hsqldb.lib.HsqlArrayHeap
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
@@ -25,6 +26,7 @@ import javax.sql.DataSource
 
 @ContextConfiguration(classes = TestConfiguration)
 // TODO activate Profile
+@ActiveProfiles("H2")
 class ConfigurationTest extends Specification {
 
     @Autowired
@@ -50,18 +52,23 @@ class ConfigurationTest extends Specification {
 
     @Configuration
     // TODO add scan
+    @ComponentScan("org.springframework.extended.section10")
     // implement @Beans
     // include DBConfiguration
+    @Import(DBConfiguration)
     public static class TestConfiguration {
 
         @Bean
         BarService barService() {
-            return null
+            BarService service = new BarService()
+            service.setFooService(fooService())
+
+            return service
         }
 
         @Bean
         FooService fooService() {
-            return null
+            return new FooService()
         }
 
 
@@ -70,17 +77,22 @@ class ConfigurationTest extends Specification {
 
     @Configuration
     // TODO include datasource configurations
+    @Import(value = [HSQLConfiguration, H2Configuration])
     public static class DBConfiguration {
+
+        @Autowired
+        DataSource ds
 
         @Bean
         PlatformTransactionManager transactionManager() {
-            return new DataSourceTransactionManager(null)
+            return new DataSourceTransactionManager(ds)
         }
 
     }
 
     @Configuration
     // TODO add Profile
+    @Profile("HSQLDB")
     public static class HSQLConfiguration {
 
         @Bean
@@ -93,6 +105,7 @@ class ConfigurationTest extends Specification {
 
     @Configuration
     // TODO add Profile
+    @Profile("H2")
     public static class H2Configuration {
 
         @Bean

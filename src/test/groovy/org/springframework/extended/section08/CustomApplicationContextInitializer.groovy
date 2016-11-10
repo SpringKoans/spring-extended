@@ -9,6 +9,7 @@ class CustomApplicationContextInitializer implements ApplicationContextInitializ
     @Override
     void initialize(ConfigurableApplicationContext applicationContext) {
         Environment environment = applicationContext.getEnvironment()
+        environment.getPropertySources().addFirst(new CustomPropertySource())
     }
 
 }
