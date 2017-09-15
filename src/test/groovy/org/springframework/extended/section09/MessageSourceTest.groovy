@@ -35,6 +35,9 @@ class MessageSourceTest extends Specification {
         @Bean
         public MessageSource messageSource() {
             ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource()
+            messageSource.setBasename("classpath:org/springframework/extended/section09/messages/messages")
+            messageSource.setDefaultEncoding("UTF-8")
+            messageSource.setFallbackToSystemLocale(false)
 
             return messageSource
         }

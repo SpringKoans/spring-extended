@@ -1,5 +1,6 @@
 package org.springframework.extended.section02
 
+import org.easymock.EasyMock
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
@@ -18,8 +19,11 @@ class MockAwareAutowireCandidateResolver extends SimpleAutowireCandidateResolver
         Class<?> dependencyType = descriptor.dependencyType;
 
         // return a mock if the bean type is not present within the context (EasyMock.createMock())
+        if (!applicationContext.containsBean(descriptor.getDependencyName())) {
+            return EasyMock.createMock(dependencyType)
+        }
 
-        return null
+        return applicationContext.getBean(dependencyType)
     }
 
     @Override

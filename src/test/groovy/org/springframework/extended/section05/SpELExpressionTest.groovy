@@ -3,14 +3,11 @@ package org.springframework.extended.section05
 import org.springframework.context.expression.MapAccessor
 import org.springframework.expression.EvaluationContext
 import org.springframework.expression.Expression
-import org.springframework.expression.spel.SpelCompilerMode
-import org.springframework.expression.spel.SpelParserConfiguration
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
 import org.springframework.util.ReflectionUtils
 import spock.lang.Specification
 import spock.lang.Unroll
-
 
 class SpELExpressionTest extends Specification {
 
@@ -23,6 +20,9 @@ class SpELExpressionTest extends Specification {
             def map = [map: [key: "regal"]]
 
             EvaluationContext context = new StandardEvaluationContext(map);
+            context.addPropertyAccessor(new MapAccessor())
+            context.registerFunction("reverse", ReflectionUtils.findMethod(SpELExpressionTest, "reverse", String))
+            context.setBeanResolver(new CustomBeanResolver())
 
         when:
             Boolean result = false
